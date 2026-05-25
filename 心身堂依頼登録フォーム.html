@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="依頼登録">
+<title>依頼登録フォーム｜心身堂鍼灸整骨院</title>
+<style>
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --border: #e2e0d8;
+    --text: #1a1a18;
+    --text-sub: #6b6a64;
+    --text-hint: #9e9d97;
+    --accent: #1a6b4a;
+    --accent-light: #e8f4ee;
+    --accent-text: #0f4a32;
+    --danger: #c0392b;
+    --danger-light: #fdf0ee;
+    --success: #1a6b4a;
+    --success-light: #e8f4ee;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 40px;
+  }
+  .top-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .top-bar-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .top-bar-icon svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .top-bar-info { flex: 1; }
+  .top-bar-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .top-bar-sub { font-size: 11px; color: var(--text-sub); margin-top: 1px; }
+  .container { max-width: 480px; margin: 0 auto; padding: 20px 16px; }
+  .section-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 11px; font-weight: 700; color: var(--text-sub);
+    letter-spacing: 0.06em;
+    padding: 10px 16px 8px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+  .field-row { padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .field-row:last-child { border-bottom: none; }
+  .field-label { font-size: 12px; font-weight: 600; color: var(--text-sub); margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+  .required { font-size: 10px; color: var(--danger); background: var(--danger-light); padding: 1px 5px; border-radius: 3px; font-weight: 700; }
+  .field-input, .field-select, .field-textarea {
+    width: 100%; padding: 10px 12px; font-size: 15px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--bg); color: var(--text);
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    outline: none; transition: border-color 0.15s, background 0.15s;
+    -webkit-appearance: none; appearance: none;
+  }
+  .field-input:focus, .field-select:focus, .field-textarea:focus { border-color: var(--accent); background: #fff; }
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 6px solid var(--text-sub); pointer-events: none;
+  }
+  .field-textarea { resize: none; height: 80px; line-height: 1.6; }
+  .btn-submit {
+    width: 100%; padding: 15px; font-size: 16px; font-weight: 700;
+    border-radius: var(--radius); background: var(--accent); color: #fff; border: none; cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    letter-spacing: 0.03em;
+  }
+  .btn-submit svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .btn-submit:active { transform: scale(0.98); background: var(--accent-text); }
+  .btn-submit:disabled { background: var(--text-hint); cursor: not-allowed; }
+  .msg { margin-top: 14px; padding: 12px 16px; border-radius: var(--radius); font-size: 14px; font-weight: 500; display: none; align-items: center; gap: 8px; }
+  .msg.success { display: flex; background: var(--success-light); color: var(--success); border: 1px solid #b8ddc9; }
+  .msg.error { display: flex; background: var(--danger-light); color: var(--danger); border: 1px solid #f0c4be; }
+  .msg svg { width: 18px; height: 18px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-icon">
+    <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><path d="M9 12h6M9 16h4"/></svg>
+  </div>
+  <div class="top-bar-info">
+    <div class="top-bar-title">依頼登録フォーム</div>
+    <div class="top-bar-sub">心身堂鍼灸整骨院</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="section-card">
+    <div class="section-title">依頼内容</div>
+    <div class="field-row">
+      <div class="field-label">依頼タイトル <span class="required">必須</span></div>
+      <input class="field-input" type="text" id="title" placeholder="例：山田様の領収書発行">
+    </div>
+    <div class="field-row">
+      <div class="field-label">依頼種別 <span class="required">必須</span></div>
+      <div class="select-wrap">
+        <select class="field-select" id="category">
+          <option value="">選択してください</option>
+          <option value="スポーツ保険対応">スポーツ保険対応</option>
+          <option value="領収書発行">領収書発行</option>
+          <option value="回答書対応">回答書対応</option>
+          <option value="POP作成">POP作成</option>
+          <option value="販売データ更新">販売データ更新</option>
+          <option value="顧客データ更新">顧客データ更新</option>
+          <option value="レセプト並び替え">レセプト並び替え</option>
+          <option value="レセ印刷">レセ印刷</option>
+          <option value="レセ郵送">レセ郵送</option>
+          <option value="分析データ更新">分析データ更新</option>
+          <option value="その他">その他</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-label">依頼者（患者様名・スタッフ名）</div>
+      <input class="field-input" type="text" id="requester" placeholder="例：山田 太郎">
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">担当・期日・状況</div>
+    <div class="field-row">
+      <div class="field-label">担当者</div>
+      <div class="select-wrap">
+        <select class="field-select" id="assignee">
+          <option value="">選択してください</option>
+          <option value="大貴">大貴</option>
+          <option value="屋良">屋良</option>
+          <option value="桃宇">桃宇</option>
+          <option value="キンタ">キンタ</option>
+          <option value="屋嘉">屋嘉</option>
+          <option value="河野">河野</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-label">お渡し日・完了日 <span class="required">必須</span></div>
+      <input class="field-input" type="date" id="due-date">
+    </div>
+    <div class="field-row">
+      <div class="field-label">ステータス</div>
+      <div class="select-wrap">
+        <select class="field-select" id="status">
+          <option value="未着手">未着手</option>
+          <option value="対応中">対応中</option>
+          <option value="完了">完了</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-title">備考</div>
+    <div class="field-row">
+      <textarea class="field-textarea" id="note" placeholder="補足事項があれば入力してください"></textarea>
+    </div>
+  </div>
+
+  <button class="btn-submit" id="submit-btn" onclick="submitForm()">
+    <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    Notionに登録する
+  </button>
+
+  <div class="msg" id="msg">
+    <svg id="msg-icon" viewBox="0 0 24 24"></svg>
+    <span id="msg-text"></span>
+  </div>
+
+</div>
+
+<script>
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxUBIvBGJfyBApNTSxqpOoanubqoec4D4euntdDo5Wr8VR7b0fr2y47bfIH5FniyN1XGQ/exec';
+
+  async function submitForm() {
+    const title = document.getElementById('title').value.trim();
+    const category = document.getElementById('category').value;
+    const requester = document.getElementById('requester').value.trim();
+    const assignee = document.getElementById('assignee').value;
+    const dueDate = document.getElementById('due-date').value;
+    const status = document.getElementById('status').value;
+    const note = document.getElementById('note').value.trim();
+    const btn = document.getElementById('submit-btn');
+
+    hideMsg();
+
+    if (!title) { showMsg('error', '依頼タイトルを入力してください'); return; }
+    if (!category) { showMsg('error', '依頼種別を選択してください'); return; }
+    if (!dueDate) { showMsg('error', 'お渡し日・完了日を入力してください'); return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;animation:spin 0.8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> 送信中...';
+
+    try {
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify({ title, category, requester, assignee, dueDate, status, note })
+      });
+
+      if (res.ok) {
+        showMsg('success', '登録完了しました！Notionに追加されました。');
+        document.getElementById('title').value = '';
+        document.getElementById('category').value = '';
+        document.getElementById('requester').value = '';
+        document.getElementById('assignee').value = '';
+        document.getElementById('due-date').value = '';
+        document.getElementById('status').value = '未着手';
+        document.getElementById('note').value = '';
+      } else {
+        showMsg('error', '送信に失敗しました。時間をおいて再度お試しください。');
+      }
+    } catch(e) {
+      showMsg('error', '通信エラーが発生しました。ネット接続を確認してください。');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Notionに登録する';
+  }
+
+  function showMsg(type, text) {
+    const msg = document.getElementById('msg');
+    const icon = document.getElementById('msg-icon');
+    const span = document.getElementById('msg-text');
+    msg.className = 'msg ' + type;
+    span.textContent = text;
+    if (type === 'success') {
+      icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+    } else {
+      icon.innerHTML = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+    }
+    msg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function hideMsg() {
+    document.getElementById('msg').className = 'msg';
+  }
+</script>
+
+</body>
+</html>
